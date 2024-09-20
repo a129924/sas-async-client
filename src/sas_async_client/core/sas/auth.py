@@ -36,8 +36,10 @@ async def get_sas_access_token(
             "your-user-password"
         )
     """
+    from ...core.sas.url_generators import generate_viya_token_url
+
     response = await async_web_session.post(
-        f"{base_url}/SASLogon/oauth/token",
+        generate_viya_token_url(base_url),
         headers=headers,
         data={
             "grant_type": "password",
