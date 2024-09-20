@@ -1,6 +1,7 @@
 from functools import lru_cache
 
 
+# CAS RESTFul URLs
 @lru_cache(maxsize=1)
 def generate_cas_base_url(base_url: str) -> str:
     """
@@ -79,11 +80,6 @@ def generate_cas_session_url(base_url: str) -> str:
 
         Create a new CAS session.
 
-    DELETE:
-        - /cas/sessions/{cas_session_id}
-
-        Delete a CAS session.
-
     Args:
         base_url (str): The base URL.
 
@@ -133,10 +129,21 @@ def generate_cas_session_url(base_url: str) -> str:
 @lru_cache(maxsize=1)
 def generate_cas_session_id_url(base_url: str, cas_session_id: str) -> str:
     """
-    Generate the CAS REST session ID URL.
+    Generate the CAS REST session ID URL and delete session.
 
     Args:
+        base_url (str): The base URL.
         cas_session_id (str): The CAS session ID.
+
+    GET:
+        - /cas/sessions/{cas_session_id}
+
+        Get information about the CAS session.
+
+    DELETE:
+        - /cas/sessions/{cas_session_id}
+
+        Delete a CAS session.
 
     Returns:
         str: The CAS REST session ID URL.
@@ -196,3 +203,35 @@ def generate_cas_action_name_url(
     """
 
     return f"{generate_cas_action_url(base_url, cas_session_id)}/{action_name}"
+
+
+# SAS Viya RESTFul URLs
+@lru_cache(maxsize=1)
+def generate_viya_token_url(base_url: str) -> str:
+    """
+    Generate the SAS Viya REST And CAS REST OAuth token URL.
+
+    POST:
+        - /SASLogon/oauth/token
+
+        Get the SAS Viya RESTFul And CAS RESTFul OAuth token.
+
+    Args:
+        base_url (str): The base URL.
+
+    Returns:
+        str: The SAS Viya RESTFul And CAS RESTFul OAuth token URL.
+
+    Schema:
+    ```json
+        {
+            "access_token": "{access_token}",
+            "token_type": "bearer",
+            "expires_in": 43199,
+            "scope": "uaa.none",
+            "revocable": false,
+            "jti": "322fdb2902c84a51a667b90b99fa1f06"
+        }
+    ```
+    """
+    return f"{base_url}/SASLogon/oauth/token"
