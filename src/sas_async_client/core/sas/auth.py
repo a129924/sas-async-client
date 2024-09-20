@@ -29,7 +29,12 @@ async def get_sas_access_token(
 
     Example:
         >>> async_web_session = create_async_web_session()
-        >>> access_token = await get_sas_access_token(async_web_session, "https://your-sas-server.com", "your-user-id", "your-user-password")
+        >>> access_token = await get_sas_access_token(
+            async_web_session,
+            "https://your-sas-server.com",
+            "your-user-id",
+            "your-user-password"
+        )
     """
     response = await async_web_session.post(
         f"{base_url}/SASLogon/oauth/token",
