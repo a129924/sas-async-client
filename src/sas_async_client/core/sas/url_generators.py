@@ -123,7 +123,7 @@ def generate_cas_session_url(base_url: str) -> str:
         }
     ```
     """
-    return f"{generate_cas_sessions_url(base_url)}/sessions"
+    return f"{generate_cas_base_url(base_url)}/sessions"
 
 
 @lru_cache(maxsize=1)
