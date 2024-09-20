@@ -4,7 +4,7 @@ from httpx import AsyncClient, Limits
 from httpx._config import DEFAULT_LIMITS
 
 
-async def create_async_web_session(
+def create_async_web_session(
     headers: Optional[dict[str, str]] = None,
     cookies: Optional[dict[str, str]] = None,
     timeout: Union[int, float] = 10,
