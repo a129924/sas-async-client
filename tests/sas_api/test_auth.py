@@ -3,11 +3,12 @@ from pytest import mark
 from pytest_asyncio import fixture as async_fixture
 
 
-@sync_fixture(scope="module")
-def client():
+@async_fixture(scope="module")
+async def client():
     from src.sas_async_client.core._httpx import create_async_web_session
 
-    return create_async_web_session()
+    async with create_async_web_session() as client:
+        yield client  # 返回 client 供測試使用
 
 
 @sync_fixture(scope="module")
@@ -61,3 +62,43 @@ async def test_get_sas_access_token(token):
 @mark.asyncio
 async def test_create_cas_session(cas_session_id):
     assert cas_session_id
+
+
+@mark.asyncio
+async def test_get_cas_session_info(cas_session_id, token, config):
+    from src.sas_async_client.core._httpx import create_async_web_session
+    from src.sas_async_client.core.sas.cas import get_cas_session_info
+
+    async with create_async_web_session(verify=False) as client:
+        session_info = await get_cas_session_info(
+            async_web_session=client,
+            sas_oauth_token=token.access_token,
+            base_url=config.sas_api_connect_url,
+            cas_session_id=cas_session_id,
+        )
+        assert session_info
+        assert session_info.id_
+        assert session_info.uuid
+        assert session_info.name
+        assert session_info.state
+        assert session_info.httpPort == 0
+        assert session_info.httpProtocol
+        assert session_info.user
+        assert session_info.owner
+        assert session_info.provider
+
+
+@mark.asyncio
+async def test_delete_cas_session(cas_session_id, token, config):
+    from src.sas_async_client.core._httpx import create_async_web_session
+    from src.sas_async_client.core.sas.cas import delete_cas_session
+
+    async with create_async_web_session(verify=False) as client:
+        result = await delete_cas_session(
+            async_web_session=client,
+            sas_oauth_token=token.access_token,
+            base_url=config.sas_api_connect_url,
+            cas_session_id=cas_session_id,
+        )
+
+        assert result is None
